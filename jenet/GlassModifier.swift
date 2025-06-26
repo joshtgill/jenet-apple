@@ -13,14 +13,34 @@ struct GlassModifier: ViewModifier {
     
     func body(content: Content) -> some View {
         content
-            .background(Color.white.opacity(isExpanded ? 0.90 : 0.75))
+            .background(
+                Color(
+                    red: 243/255,
+                    green: 244/255,
+                    blue: 246/255
+                ).opacity(isExpanded ? 0.70 : 0.60)
+            )
             .cornerRadius(15)
             .overlay(
                 RoundedRectangle(cornerRadius: 15)
-                    .stroke(Color.gray.opacity(0.2), lineWidth: 1)
+//                    .fill(.ultraThinMaterial)
+                    .stroke(
+                        Color(
+                            red: 209/255,
+                            green: 213/255,
+                            blue: 219/255),
+                        lineWidth: 1
+                    )
             )
-            .shadow(color: Color(red: 180/255, green: 180/255, blue: 200/255, opacity: 0.3),
-                    radius: 16)
+            .shadow(
+                color: Color(
+                    red: 180/255,
+                    green: 180/255,
+                    blue: 200/255).opacity(isExpanded ? 0.3 : 0.2),
+                radius: isExpanded ? 16 : 8,
+                x: 0,
+                y: 0
+            )
     }
 }
 extension View {
