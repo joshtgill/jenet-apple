@@ -9,16 +9,18 @@ import SwiftUI
 
 
 struct ContentView: View {
-    @State private var scrollOffset: CGFloat = 0
+    @State private var headerHeight: CGFloat = 0
+    @State private var inputHeight: CGFloat = 0
     @State private var currentPanel: Int = 0
+    @State private var scrollOffset: CGFloat = 0
     @State private var expandedPanelIndex: Int? = nil
     @Namespace private var panelNamespace
 
     let panelCount = 10
 
     var body: some View {
-        GeometryReader { geo in
-            ZStack {
+        ZStack {
+            GeometryReader { geo in
                 if expandedPanelIndex == nil {
                     ScrollViewReader { proxyReader in
                         ScrollView(.vertical, showsIndicators: false) {
@@ -72,6 +74,47 @@ struct ContentView: View {
                 endPoint: .bottomTrailing
             )
         )
+        .overlay(
+            HeaderView()
+                .background(
+                    GeometryReader { proxy in
+                        Color.clear
+                            .onAppear { headerHeight = proxy.size.height }
+                            .onChange(of: proxy.size.height, initial: true) { newValue, _ in
+                                headerHeight = newValue
+                            }
+                    }
+                ),
+            alignment: .top
+        )
+        .overlay(
+            InputView()
+                .background(
+                    GeometryReader { proxy in
+                        Color.clear
+                            .onAppear { inputHeight = proxy.size.height }
+                            .onChange(of: proxy.size.height, initial: true) { newValue, _ in
+                                inputHeight = newValue
+                            }
+                    }                ),
+            alignment: .bottom
+        )
+    }
+
+    private func fetchMessage() {
+        let url = URL(string: "https://api.jenet.ai/message")!
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            guard let data = data else {
+                return
+            }
+
+            if let jsonObject = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
+                print("Received JSON:", jsonObject.keys)
+                // You can now extract keys or values dynamically
+            } else {
+                print("Failed to load JSON")
+            }
+        }.resume()
     }
 
     private func buildPanel(index: Int, geo: GeometryProxy) -> some View {
@@ -79,6 +122,8 @@ struct ContentView: View {
         return PanelView(
             index: index,
             isExpanded: isExpanded,
+            headerHeight: headerHeight,
+            inputHeight: inputHeight,
             onTap: {
                 withAnimation(.spring(response: 0.7, dampingFraction: 0.5)) {
                     expandedPanelIndex = isExpanded ? nil : index

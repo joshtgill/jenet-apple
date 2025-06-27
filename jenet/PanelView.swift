@@ -11,16 +11,12 @@ import SwiftUI
 struct PanelView: View {
     let index: Int
     let isExpanded: Bool
+    let headerHeight: CGFloat
+    let inputHeight: CGFloat
     let onTap: () -> Void
 
     var body: some View {
-        ZStack {
-            Color.clear
-            Text("Panel \(index)")
-                .font(.largeTitle)
-                .bold()
-                .foregroundColor(.black)
-        }
+        MessageView(isExpanded: isExpanded, headerHeight: headerHeight, inputHeight: inputHeight)
             .contentShape(Rectangle())
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .onTapGesture { onTap() }

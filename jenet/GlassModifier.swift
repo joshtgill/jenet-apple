@@ -10,20 +10,13 @@ import SwiftUI
 
 struct GlassModifier: ViewModifier {
     let isExpanded: Bool
-    
+
     func body(content: Content) -> some View {
         content
-            .background(
-                Color(
-                    red: 243/255,
-                    green: 244/255,
-                    blue: 246/255
-                ).opacity(isExpanded ? 0.70 : 0.60)
-            )
+            .background(.ultraThinMaterial)
             .cornerRadius(15)
             .overlay(
                 RoundedRectangle(cornerRadius: 15)
-//                    .fill(.ultraThinMaterial)
                     .stroke(
                         Color(
                             red: 209/255,
